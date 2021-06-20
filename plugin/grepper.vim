@@ -155,6 +155,7 @@ function! s:on_stdout_nvim(_job_id, data, _event) dict abort
       " Second-last item is the last complete line in a:data.
       let acc_line = self.stdoutbuf . a:data[0]
       let lcandidates = (empty(acc_line) ? [] : [acc_line]) + a:data[1:-2]
+      let lcandidates = map(lcandidates, {key, val -> trim(val)})
       let self.stdoutbuf = ''
     endif
     " Last item in a:data is an incomplete line (or empty), append to buffer
@@ -935,6 +936,7 @@ function! s:run(flags)
           \ 'on_stdout': function('s:on_stdout_nvim'),
           \ 'on_stderr': function('s:on_stdout_nvim'),
           \ 'on_exit':   function('s:on_exit'),
+          \ 'pty': 1,
           \ }
     if !a:flags.stop
       let opts.stdout_buffered = 1
